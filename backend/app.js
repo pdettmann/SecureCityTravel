@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require("./model/user");
 const Place = require("./model/berlinPlaces");
+const auth = require("./middleware/auth");
 
 const app = express();
 
@@ -96,6 +97,10 @@ app.post("/login", async (req, res) => {
   } catch (err) {
     console.log(err);
   }
+});
+
+app.post("/welcome", auth, (req, res) => {
+    res.status(200).send("Welcome 🙌 ");
 });
 
 app.get("/bars", async (req, res, next) => {
