@@ -103,22 +103,21 @@ app.post("/welcome", auth, (req, res) => {
     res.status(200).send("Welcome 🙌 ");
 });
 
-app.get("/bars", async (req, res, next) => {
+app.get("/bars", async (req, res) => {
     const query = {category: "Best Bars"};
     const sorting = {rating: -1};
     const result = await Place.find(query).sort(sorting);
-    console.log(result);
     res.json(result);
 });
 
-app.get("/restaurants", async (req, res, next) => {
+app.get("/restaurants", async (req, res) => {
     const query = {category: "Best Restaurants"};
     const sorting = {rating: -1};
     const result = await Place.find(query).sort(sorting);
     res.json(result);
 });
 
-app.get("/brunch", async (req, res, next) => {
+app.get("/brunch", async (req, res) => {
     const query = {category: "Brunch"};
     const sorting = {rating: -1};
     const result = await Place.find(query).sort(sorting);
