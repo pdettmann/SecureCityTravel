@@ -1,7 +1,5 @@
-// query user with password and email
-// send user details (profile)
-// check pw against have I been pwned
 // check pw against confirmPassword in frontend
+// check if email is valid in frontend
 // solarqube
 
 const http = require("http");
