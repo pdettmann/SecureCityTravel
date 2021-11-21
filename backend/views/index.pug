@@ -1,0 +1,14 @@
+html
+  head
+    title= title
+  body
+    h1= message
+    form(action='/updatePw', method='POST')
+        p
+            | New password:
+            input(type='text', name='pw', value='')
+            |          Confirm password:
+            input(type='text', name='confirmPw', value='')
+            |
+            input(type="hidden" name="token" value=token)
+        input(type='submit', value='Submit')
