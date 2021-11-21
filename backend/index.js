@@ -2,9 +2,9 @@
 // check if email is valid in frontend
 // solarqube
 
-const http = require("http");
+const https = require("https");
 const app = require("./app");
-const server = http.createServer(app);
+const server = https.createServer(app);
 
 const { API_PORT } = process.env;
 const port = process.env.PORT || API_PORT;
