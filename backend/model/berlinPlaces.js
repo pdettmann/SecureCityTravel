@@ -10,4 +10,6 @@ const berlinPlacesSchema = new Schema({
     bay_rating: Number
 });
 
+berlinPlacesSchema.index({ category: 1});
+
 module.exports = model('berlinPlaces', berlinPlacesSchema, 'berlinPlaces');
