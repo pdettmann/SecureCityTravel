@@ -5,7 +5,7 @@ const userSchema = new Schema({
 	password: String,
 	email: String,
 	createdAt: String,
-	role: String,
+    scope: String,
     token: String,
     lastUpdated: Object
 });

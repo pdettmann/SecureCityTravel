@@ -1,4 +1,3 @@
-//const nodemailer = require("nodemailer");
 const mailgun = require("mailgun-js");
 
 const sendEmail = async (email, resetLink) => {

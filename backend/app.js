@@ -52,6 +52,7 @@ app.post("/register", cors(corsOptions), async (req, res) => {
             username,
             password: encryptedPassword,
             createdAt: new Date().toISOString(),
+            scope: "user"
         });
 
         // Create token
@@ -89,7 +90,7 @@ app.post("/login", cors(corsOptions), async (req, res) => {
     if (user && (await bcrypt.compare(password, user.password))) {
       // Create token
       const token = jwt.sign(
-        { user_id: user._id, email },
+        { user_id: user._id, email, scope: user.scope },
         process.env.TOKEN_KEY,
         {
           expiresIn: "2h",
@@ -123,6 +124,7 @@ app.post("/resetPwLoggedIn", cors(corsOptions), auth, async (req, res) => {
     const link = `http://localhost:4001/resetPwLink?token=${token}`;
 
     sendEmail(email, link);
+    console.log("email sent");
 });
 
 app.post("/resetPwNotLoggedIn", cors(corsOptions), async (req, res) => {
@@ -146,7 +148,6 @@ app.post("/resetPwNotLoggedIn", cors(corsOptions), async (req, res) => {
             expiresIn: "5h",
         }
     );
-    console.log(token);
 
     const link = `http://localhost:4001/resetPwLink?token=${token}`;
     sendEmail(email, link);
@@ -161,7 +162,6 @@ app.get("/resetPwLink", cors(corsOptions), (req, res) => {
     }
 
     try {
-        console.log(token);
         jwt.verify(token, process.env.TOKEN_KEY);
     } catch (err) {
         console.error(err)
@@ -174,16 +174,13 @@ app.get("/resetPwLink", cors(corsOptions), (req, res) => {
 
 app.post("/updatePW", cors(corsOptions), async (req, res) => {
     const token = req.body.token;
-    console.log('called updatePW');
     try {
         const decoded = jwt.verify(token, process.env.TOKEN_KEY);
         const email = decoded.email;
-        console.log('token verified');
 
         // get new pw from frontend
         const newPassword = req.body.pw;
         const confirmPw = req.body.confirmPw;
-        console.log(newPassword);
         if (newPassword != confirmPw) {
             return res.status(409).send("Passwords don't match");
         }
@@ -192,8 +189,7 @@ app.post("/updatePW", cors(corsOptions), async (req, res) => {
         const encryptedPassword = await bcrypt.hash(newPassword, 12);
 
         // update pw in db
-        const result = await User.updateMany({email: email}, {password: encryptedPassword, lastUpdated: {"password": new Date().toISOString()}}, { upsert: true });
-        console.log(result);
+        await User.updateMany({email: email}, {password: encryptedPassword, lastUpdated: {"password": new Date().toISOString()}}, { upsert: true });
         res.send("password updated");
     } catch (err) {
         console.error(err);
@@ -201,8 +197,34 @@ app.post("/updatePW", cors(corsOptions), async (req, res) => {
     };
 });
 
-app.post("/welcome", cors(corsOptions), auth, (req, res) => {
-    res.status(200).send("Welcome 🙌 ");
+app.post("/updateList", cors(corsOptions), auth, async (req, res) => {
+    const scope = req.user.scope;
+    if (scope != "admin") {
+        return res.status(401).send('Unauthorized request');
+    }
+
+    const nameOfDoc = req.body.nameOfDoc;
+
+    const placeUpdate = {
+        "name": req.body.name,
+        "content": req.body.content,
+        "category": req.body.category,
+        "link": req.body.link,
+        "tally": req.body.tally,
+        "bay_rating": req.body.bay_rating
+    };
+
+    const result = await Place.updateMany({name: nameOfDoc}, {
+        name: placeUpdate.name,
+        content: placeUpdate.content,
+        category:placeUpdate.category,
+        link: placeUpdate.link,
+        tally: placeUpdate.tally,
+        bay_rating:placeUpdate.bay_rating
+    });
+
+    res.send("updated");
+    console.log(result);
 });
 
 app.get("/bars", cors(corsOptions), auth, async (req, res) => {
