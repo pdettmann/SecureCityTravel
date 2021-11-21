@@ -16,6 +16,6 @@
 3. use the command `npm run dev` to start the API locally
 
 
-[Cyber Security](./CYBER_SECURITY.md)
+[Cyber Security](./CYBER_SECURITY.md) \
 [NO SQL DATABASES](./NO_SQL.md)
 
