@@ -48,7 +48,7 @@ app.post("/register", cors(corsOptions), async (req, res) => {
 
         // check if user already exist
         // Validate if user exist in our database
-        const oldUser = await User.findOne({ email: email.toLowerCase() });
+        const oldUser = await User.findOne({ email: email.toString().toLowerCase() });
 
         if (oldUser) {
             return res.status(409).send("User Already Exist. Please Login");
@@ -59,9 +59,9 @@ app.post("/register", cors(corsOptions), async (req, res) => {
 
         // Create user in our database
         const user = await User.create({
-            email: email.toLowerCase(), // sanitize: convert email to lowercase,
-            username,
-            password: encryptedPassword,
+            email: email.toString().toLowerCase(), // sanitize: convert email to lowercase,
+            username: username.toString(),
+            password: encryptedPassword.toString(),
             createdAt: new Date().toISOString(),
             scope: "user"
         });
@@ -91,7 +91,7 @@ app.post("/login", cors(corsOptions), async (req, res) => {
       res.status(400).send("All input is required");
     }
 
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const user = await User.findOne({ email: email.toString().toLowerCase() });
     console.log(user);
 
     if (user && (await bcrypt.compare(password, user.password))) {
@@ -136,7 +136,7 @@ app.post("/resetPwNotLoggedIn", cors(corsOptions), async (req, res) => {
         res.status(400).send("Email is required");
       }
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: email.toString() });
 
     if (!user) {
         res.send('User does not exist!');
@@ -187,7 +187,7 @@ app.post("/updatePW", cors(corsOptions), async (req, res) => {
 
         const encryptedPassword = await bcrypt.hash(newPassword, 12);
 
-        await User.updateMany({email: email}, {password: encryptedPassword, lastUpdated: {"password": new Date().toISOString()}}, { upsert: true });
+        await User.updateMany({email: email.toString()}, {password: encryptedPassword.toString(), lastUpdated: {"password": new Date().toISOString()}}, { upsert: true });
         res.send("password updated");
     } catch (err) {
         console.error(err);
@@ -213,12 +213,12 @@ app.post("/updateList", cors(corsOptions), auth, async (req, res) => {
     };
 
     const result = await Place.updateMany({name: nameOfDoc}, {
-        name: placeUpdate.name,
-        content: placeUpdate.content,
-        category:placeUpdate.category,
-        link: placeUpdate.link,
-        tally: placeUpdate.tally,
-        bay_rating:placeUpdate.bay_rating
+        name: placeUpdate.name.toString(),
+        content: placeUpdate.content.toString(),
+        category:placeUpdate.category.toString(),
+        link: placeUpdate.link.toString(),
+        tally: placeUpdate.tally.toString(),
+        bay_rating:placeUpdate.bay_rating.toString()
     });
 
     res.send("updated");
@@ -231,7 +231,7 @@ app.get("/bars", cors(corsOptions), auth, async (req, res) => {
 });
 
 app.get("/berlinPlaceName", cors(corsOptions), auth, async (req, res) => {
-    const result = await Place.findOne({name: req.body.name});
+    const result = await Place.findOne({name: req.body.name.toString()});
     res.json(result);
 });
 
