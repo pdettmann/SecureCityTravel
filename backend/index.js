@@ -2,8 +2,8 @@
 // check if email is valid in frontend
 // sonarqube
 
+// in production I would use https (using letsencrypt for the certificate)
 const http = require("http");
-const fs = require("fs");
 
 const app = require("./app");
 const server = http.createServer(app);

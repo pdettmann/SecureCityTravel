@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 
+// token key in .env
 const config = process.env;
 
 const verifyToken = (req, res, next) => {

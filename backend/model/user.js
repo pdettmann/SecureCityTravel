@@ -1,5 +1,6 @@
 const { model, Schema } = require('mongoose');
 
+// datatypes for validation
 const userSchema = new Schema({
 	username: String,
 	password: String,
