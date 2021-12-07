@@ -1,5 +1,7 @@
 require("./config/db").connect();
 require("express-async-errors");
+require('dotenv').config();
+
 const express = require("express");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -17,9 +19,18 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.set('view engine', 'pug');
 
-var corsOptions = {
-    origin: '*',
-    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+const devEnv = process.env.DEVENV;
+
+if (devEnv == "true") {
+    var corsOptions = {
+        origin: '*',
+        optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+    }
+} else {
+    var corsOptions = {
+        origin: 'url',
+        optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+    }
 }
 
 // Register
@@ -228,7 +239,12 @@ app.post("/updateList", cors(corsOptions), auth, async (req, res) => {
 });
 
 app.get("/bars", cors(corsOptions), auth, async (req, res) => {
-    const result = await Place.find({category: "Best Bars"}).sort({rating: -1});
+    const result = await Place.find({category: "Best Bars"});
+    res.json(result);
+});
+
+app.get("/berlinPlaceName", cors(corsOptions), auth, async (req, res) => {
+    const result = await Place.findOne({name: req.body.name});
     res.json(result);
 });
 
