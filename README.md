@@ -15,6 +15,7 @@
     - MAILGUNAPIKEY
 3. use the command `npm run dev` to start the API locally
 
-
-[Cyber Security](./CYBER_SECURITY.md)
+### Module Documentation
+[Cyber Security](./CYBER_SECURITY.md) \
+[No SQL Databases](./NO_SQL.md)
 
