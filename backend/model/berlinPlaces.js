@@ -7,7 +7,8 @@ const berlinPlacesSchema = new Schema({
     category: Array,
     link: Array,
     tally: Number,
-    bay_rating: Number
+    bay_rating: Number,
+    dummy: Boolean
 });
 
 berlinPlacesSchema.index({ name: 1});

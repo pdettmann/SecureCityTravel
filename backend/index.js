@@ -1,10 +1,12 @@
 // check pw against confirmPassword in frontend
 // check if email is valid in frontend
-// solarqube
+// sonarqube
 
-const https = require("https");
+const http = require("http");
+const fs = require("fs");
+
 const app = require("./app");
-const server = https.createServer(app);
+const server = http.createServer(app);
 
 const { API_PORT } = process.env;
 const port = process.env.PORT || API_PORT;

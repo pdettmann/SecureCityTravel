@@ -17,13 +17,14 @@
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
     "handlebars": "^4.7.7",
-    "https": "^1.0.0",
+    "http": "0.0.1-security",
     "jsonwebtoken": "^8.5.1",
     "mailgun-js": "^0.22.0",
     "mongodb": "^4.1.4",
     "mongoose": "^6.0.12",
     "nodemailer": "^6.7.0",
-    "pug": "^3.0.2"
+    "pug": "^3.0.2",
+    "randomstring": "^1.2.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
