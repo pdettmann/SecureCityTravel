@@ -20,14 +20,15 @@ app.use(cors());
 app.set('view engine', 'pug');
 
 const devEnv = process.env.DEVENV;
+var corsOptions;
 
 if (devEnv == "true") {
-    var corsOptions = {
+    corsOptions = {
         origin: '*',
         optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
     }
 } else {
-    var corsOptions = {
+    corsOptions = {
         origin: 'url',
         optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
     }
@@ -201,7 +202,7 @@ app.post("/updateList", cors(corsOptions), auth, async (req, res) => {
         return res.status(401).send('Unauthorized request');
     }
 
-    const nameOfDoc = req.body.nameOfDoc;
+    const nameOfDoc = req.body.nameOfDoc.toString();
 
     const placeUpdate = {
         "name": req.body.name,
