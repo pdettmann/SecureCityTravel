@@ -55,7 +55,7 @@ app.post("/register", cors(corsOptions), async (req, res) => {
         }
 
         //Encrypt user password
-        encryptedPassword = await bcrypt.hash(password, 12);
+        const encryptedPassword = await bcrypt.hash(password, 12);
 
         // Create user in our database
         const user = await User.create({
@@ -74,32 +74,27 @@ app.post("/register", cors(corsOptions), async (req, res) => {
                 expiresIn: "2h",
             }
         );
-        // save user token
+
         user.token = token;
 
-        // return new user
         res.status(201).json(user);
     } catch (err) {
         console.log(err);
-    };
+    }
 });
 
 app.post("/login", cors(corsOptions), async (req, res) => {
  try {
-    // Get user input
     const { email, password } = req.body;
 
-    // Validate user input
     if (!(email && password)) {
       res.status(400).send("All input is required");
     }
 
-    // Validate if user exist in our database
     const user = await User.findOne({ email: email.toLowerCase() });
     console.log(user);
 
     if (user && (await bcrypt.compare(password, user.password))) {
-      // Create token
       const token = jwt.sign(
         { user_id: user._id, email, scope: user.scope },
         process.env.TOKEN_KEY,
@@ -108,10 +103,8 @@ app.post("/login", cors(corsOptions), async (req, res) => {
         }
       );
 
-      // save user token
       user.token = token;
 
-      // user
       res.status(200).json(user);
     }
     res.status(400).send("Invalid Credentials");
@@ -124,7 +117,6 @@ app.post("/resetPwLoggedIn", cors(corsOptions), auth, async (req, res) => {
    const email = req.user.email;
    console.log(email);
 
-   // Create token
    const token = jwt.sign(
         { user_id: req.user._id, email },
         process.env.TOKEN_KEY,
@@ -151,7 +143,6 @@ app.post("/resetPwNotLoggedIn", cors(corsOptions), async (req, res) => {
         return
     }
 
-    // Create token
     const token = jwt.sign(
         { user_id: user._id, email },
         process.env.TOKEN_KEY,
@@ -177,9 +168,8 @@ app.get("/resetPwLink", cors(corsOptions), (req, res) => {
     } catch (err) {
         console.error(err)
         return res.status(401).send("Invalid Token");
-    };
+    }
 
-    // use pugexpress to generate html form
     res.render('index', { title: 'Reset Password', message: 'Please reset your password here:', token: token })
 });
 
@@ -189,17 +179,14 @@ app.post("/updatePW", cors(corsOptions), async (req, res) => {
         const decoded = jwt.verify(token, process.env.TOKEN_KEY);
         const email = decoded.email;
 
-        // get new pw from frontend
         const newPassword = req.body.pw;
         const confirmPw = req.body.confirmPw;
         if (newPassword != confirmPw) {
             return res.status(409).send("Passwords don't match");
         }
 
-        // hash pw
         const encryptedPassword = await bcrypt.hash(newPassword, 12);
 
-        // update pw in db
         await User.updateMany({email: email}, {password: encryptedPassword, lastUpdated: {"password": new Date().toISOString()}}, { upsert: true });
         res.send("password updated");
     } catch (err) {
