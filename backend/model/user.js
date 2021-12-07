@@ -10,4 +10,7 @@ const userSchema = new Schema({
     lastUpdated: Object
 });
 
+userSchema.index({ email: 1});
+userSchema.index({ password: 1});
+
 module.exports = model('user', userSchema);
