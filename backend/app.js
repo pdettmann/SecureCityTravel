@@ -13,6 +13,7 @@ const auth = require("./middleware/auth");
 const sendEmail = require("./utils/sendEmail");
 
 const app = express();
+app.disable("x-powered-by");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -193,7 +194,7 @@ app.post("/updatePW", cors(corsOptions), async (req, res) => {
     } catch (err) {
         console.error(err);
         return res.status(401).send("something went wrong");
-    };
+    }
 });
 
 app.post("/updateList", cors(corsOptions), auth, async (req, res) => {
